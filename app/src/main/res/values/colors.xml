@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- grey_500 -->
+    <color name="icons_color">#9E9E9E</color>
+    <!-- red_500 -->
+    <color name="error_color">#F44336</color>
+    <!-- amber_500 -->
+    <color name="warning_color">#FFC107</color>
+    <!-- green_500 -->
+    <color name="success_color">#4CAF50</color>
+</resources>
