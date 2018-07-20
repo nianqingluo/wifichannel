@@ -33,7 +33,6 @@ import java.util.Deque;
 import java.util.List;
 
 class Cache {
-    private static final int ADJUST = 10;
     private final Deque<List<ScanResult>> cachedScanResults = new ArrayDeque<>();
 
     @NonNull
@@ -62,11 +61,7 @@ class Cache {
     @NonNull
     private CacheResult getCacheResult(ScanResult current, int level, int count) {
         CacheResult cacheResult;
-        if (isSizeAvailable()) {
-            cacheResult = new CacheResult(current, level / count);
-        } else {
-            cacheResult = new CacheResult(current, (level - ADJUST) / count);
-        }
+        cacheResult = new CacheResult(current, level / count);
         return cacheResult;
     }
 
@@ -88,42 +83,27 @@ class Cache {
         }
     }
 
-    @NonNull
-    Deque<List<ScanResult>> getCachedScanResults() {
-        return cachedScanResults;
-    }
 
     int getCacheSize() {
-        if (isSizeAvailable()) {
-            int scanInterval = 3;
-            if (scanInterval < 2) {
-                return 4;
-            }
-            if (scanInterval < 5) {
-                return 3;
-            }
-            if (scanInterval < 10) {
-                return 2;
-            }
+        int scanInterval = 3;
+        if (scanInterval < 2) {
+            return 4;
+        } else if (scanInterval < 5) {
+            return 3;
+        } else if (scanInterval < 10) {
+            return 2;
         }
         return 1;
     }
 
-    private boolean isSizeAvailable() {
-        try {
-            return MainContext.INSTANCE.getConfiguration().isSizeAvailable();
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     private static class ScanResultComparator implements Comparator<ScanResult> {
         @Override
         public int compare(ScanResult lhs, ScanResult rhs) {
             return new CompareToBuilder()
-                .append(lhs.BSSID, rhs.BSSID)
-                .append(lhs.level, rhs.level)
-                .toComparison();
+                    .append(lhs.BSSID, rhs.BSSID)
+                    .append(lhs.level, rhs.level)
+                    .toComparison();
         }
     }
 

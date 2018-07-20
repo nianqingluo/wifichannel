@@ -38,15 +38,10 @@ class Transformer {
             return WiFiConnection.EMPTY;
         }
         return new WiFiConnection(
-            WiFiUtils.convertSSID(wifiInfo.getSSID()),
-            wifiInfo.getBSSID(),
-            WiFiUtils.convertIpAddress(wifiInfo.getIpAddress()),
-            wifiInfo.getLinkSpeed());
-    }
-
-    @NonNull
-    List<String> transformWifiConfigurations(List<WifiConfiguration> configuredNetworks) {
-        return new ArrayList<>(CollectionUtils.collect(configuredNetworks, new ToString()));
+                WiFiUtils.convertSSID(wifiInfo.getSSID()),
+                wifiInfo.getBSSID(),
+                WiFiUtils.convertIpAddress(wifiInfo.getIpAddress()),
+                wifiInfo.getLinkSpeed());
     }
 
     @NonNull
@@ -87,11 +82,10 @@ class Transformer {
     }
 
     @NonNull
-    WiFiData transformToWiFiData(List<CacheResult> cacheResults, WifiInfo wifiInfo, List<WifiConfiguration> configuredNetworks) {
+    WiFiData transformToWiFiData(List<CacheResult> cacheResults, WifiInfo wifiInfo) {
         List<WiFiDetail> wiFiDetails = transformCacheResults(cacheResults);
         WiFiConnection wiFiConnection = transformWifiInfo(wifiInfo);
-        List<String> wifiConfigurations = transformWifiConfigurations(configuredNetworks);
-        return new WiFiData(wiFiDetails, wiFiConnection, wifiConfigurations);
+        return new WiFiData(wiFiDetails, wiFiConnection);
     }
 
     enum Fields {

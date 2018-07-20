@@ -29,16 +29,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public enum Security {
-    NONE(R.drawable.ic_lock_open_black_18dp),
-    WPS(R.drawable.ic_lock_outline_black_18dp),
-    WEP(R.drawable.ic_lock_outline_black_18dp),
-    WPA(R.drawable.ic_lock_black_18dp),
-    WPA2(R.drawable.ic_lock_black_18dp);
+    NONE();
 
-    private final int imageResource;
 
-    Security(int imageResource) {
-        this.imageResource = imageResource;
+    Security() {
     }
 
     @NonNull
@@ -46,7 +40,7 @@ public enum Security {
         Set<Security> results = new TreeSet<>();
         if (capabilities != null) {
             String[] values = capabilities.toUpperCase()
-                .replace("][", "-").replace("]", "").replace("[", "").split("-");
+                    .replace("][", "-").replace("]", "").replace("[", "").split("-");
             for (String value : values) {
                 try {
                     results.add(Security.valueOf(value));
@@ -64,9 +58,6 @@ public enum Security {
         return result == null ? Security.NONE : result;
     }
 
-    public int getImageResource() {
-        return imageResource;
-    }
 
     private static class SecurityPredicate implements Predicate<Security> {
         private final List<Security> securities;

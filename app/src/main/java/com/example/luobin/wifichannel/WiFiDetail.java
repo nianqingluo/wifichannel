@@ -97,10 +97,6 @@ public class WiFiDetail implements Comparable<WiFiDetail> {
         return children;
     }
 
-    public boolean noChildren() {
-        return !getChildren().isEmpty();
-    }
-
     @NonNull
     public String getTitle() {
         return String.format("%s (%s)", getSSID(), BSSID);
@@ -112,32 +108,34 @@ public class WiFiDetail implements Comparable<WiFiDetail> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         WiFiDetail that = (WiFiDetail) o;
 
         return new EqualsBuilder()
-            .append(getSSID(), that.getSSID())
-            .append(getBSSID(), that.getBSSID())
-            .isEquals();
+                .append(getSSID(), that.getSSID())
+                .append(getBSSID(), that.getBSSID())
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(getSSID())
-            .append(getBSSID())
-            .toHashCode();
+                .append(getSSID())
+                .append(getBSSID())
+                .toHashCode();
     }
 
     @Override
     public int compareTo(@NonNull WiFiDetail another) {
         return new CompareToBuilder()
-            .append(getSSID(), another.getSSID())
-            .append(getBSSID(), another.getBSSID())
-            .toComparison();
+                .append(getSSID(), another.getSSID())
+                .append(getBSSID(), another.getBSSID())
+                .toComparison();
     }
 
     @Override

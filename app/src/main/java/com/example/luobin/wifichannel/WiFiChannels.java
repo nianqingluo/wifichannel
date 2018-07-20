@@ -21,7 +21,6 @@ package com.example.luobin.wifichannel;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
@@ -31,10 +30,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 public abstract class WiFiChannels {
-    public static final Pair<WiFiChannel, WiFiChannel> UNKNOWN = new Pair<>(WiFiChannel.UNKNOWN, WiFiChannel.UNKNOWN);
     public static final int FREQUENCY_SPREAD = 5;
-    public static final int CHANNEL_OFFSET = 2;
-    public static final int FREQUENCY_OFFSET = FREQUENCY_SPREAD * CHANNEL_OFFSET;
 
     private final Pair<Integer, Integer> wiFiRange;
     private final List<Pair<WiFiChannel, WiFiChannel>> wiFiChannelPairs;
@@ -61,26 +57,10 @@ public abstract class WiFiChannels {
     WiFiChannel getWiFiChannelByChannel(int channel) {
         Pair<WiFiChannel, WiFiChannel> found = IterableUtils.find(wiFiChannelPairs, new ChannelPredicate(channel));
         return found == null
-            ? WiFiChannel.UNKNOWN
-            : new WiFiChannel(channel, found.first.getFrequency() + ((channel - found.first.getChannel()) * FREQUENCY_SPREAD));
+                ? WiFiChannel.UNKNOWN
+                : new WiFiChannel(channel, found.first.getFrequency() + ((channel - found.first.getChannel()) * FREQUENCY_SPREAD));
     }
 
-    @NonNull
-    public WiFiChannel getWiFiChannelFirst() {
-        return wiFiChannelPairs.get(0).first;
-    }
-
-    @NonNull
-    public WiFiChannel getWiFiChannelLast() {
-        return wiFiChannelPairs.get(wiFiChannelPairs.size() - 1).second;
-    }
-
-    @NonNull
-    public List<WiFiChannel> getWiFiChannels() {
-        List<WiFiChannel> results = new ArrayList<>();
-        IterableUtils.forEach(wiFiChannelPairs, new WiFiChannelClosure(results));
-        return results;
-    }
 
     @NonNull
     WiFiChannel getWiFiChannel(int frequency, @NonNull Pair<WiFiChannel, WiFiChannel> wiFiChannelPair) {
@@ -95,17 +75,6 @@ public abstract class WiFiChannels {
 
     @NonNull
     public abstract List<WiFiChannel> getAvailableChannels(String countryCode);
-
-    public abstract boolean isChannelAvailable(String countryCode, int channel);
-
-    @NonNull
-    public abstract List<Pair<WiFiChannel, WiFiChannel>> getWiFiChannelPairs();
-
-    @NonNull
-    public abstract Pair<WiFiChannel, WiFiChannel> getWiFiChannelPairFirst(String countryCode);
-
-    @NonNull
-    public abstract WiFiChannel getWiFiChannelByFrequency(int frequency, @NonNull Pair<WiFiChannel, WiFiChannel> wiFiChannelPair);
 
     @NonNull
     List<WiFiChannel> getAvailableChannels(SortedSet<Integer> channels) {
@@ -151,19 +120,5 @@ public abstract class WiFiChannels {
         }
     }
 
-    private class WiFiChannelClosure implements Closure<Pair<WiFiChannel, WiFiChannel>> {
-        private final List<WiFiChannel> wiFiChannels;
-
-        private WiFiChannelClosure(@NonNull List<WiFiChannel> wiFiChannels) {
-            this.wiFiChannels = wiFiChannels;
-        }
-
-        @Override
-        public void execute(Pair<WiFiChannel, WiFiChannel> wiFiChannelPair) {
-            for (int channel = wiFiChannelPair.first.getChannel(); channel <= wiFiChannelPair.second.getChannel(); channel++) {
-                wiFiChannels.add(getWiFiChannelByChannel(channel));
-            }
-        }
-    }
 
 }

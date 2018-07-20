@@ -25,9 +25,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import java.util.Comparator;
 
 public enum SortBy {
-    STRENGTH(new StrengthComparator()),
-    SSID(new SSIDComparator()),
-    CHANNEL(new ChannelComparator());
+    STRENGTH(new StrengthComparator());
 
     private final Comparator<WiFiDetail> comparator;
 
@@ -44,35 +42,12 @@ public enum SortBy {
         @Override
         public int compare(WiFiDetail lhs, WiFiDetail rhs) {
             return new CompareToBuilder()
-                .append(rhs.getWiFiSignal().getLevel(), lhs.getWiFiSignal().getLevel())
-                .append(lhs.getSSID().toUpperCase(), rhs.getSSID().toUpperCase())
-                .append(lhs.getBSSID().toUpperCase(), rhs.getBSSID().toUpperCase())
-                .toComparison();
+                    .append(rhs.getWiFiSignal().getLevel(), lhs.getWiFiSignal().getLevel())
+                    .append(lhs.getSSID().toUpperCase(), rhs.getSSID().toUpperCase())
+                    .append(lhs.getBSSID().toUpperCase(), rhs.getBSSID().toUpperCase())
+                    .toComparison();
         }
     }
 
 
-    static class SSIDComparator implements Comparator<WiFiDetail> {
-        @Override
-        public int compare(WiFiDetail lhs, WiFiDetail rhs) {
-            return new CompareToBuilder()
-                .append(lhs.getSSID().toUpperCase(), rhs.getSSID().toUpperCase())
-                .append(rhs.getWiFiSignal().getLevel(), lhs.getWiFiSignal().getLevel())
-                .append(lhs.getBSSID().toUpperCase(), rhs.getBSSID().toUpperCase())
-                .toComparison();
-        }
     }
-
-    static class ChannelComparator implements Comparator<WiFiDetail> {
-        @Override
-        public int compare(WiFiDetail lhs, WiFiDetail rhs) {
-            return new CompareToBuilder()
-                .append(lhs.getWiFiSignal().getPrimaryWiFiChannel().getChannel(), rhs.getWiFiSignal().getPrimaryWiFiChannel().getChannel())
-                .append(rhs.getWiFiSignal().getLevel(), lhs.getWiFiSignal().getLevel())
-                .append(lhs.getSSID().toUpperCase(), rhs.getSSID().toUpperCase())
-                .append(lhs.getBSSID().toUpperCase(), rhs.getBSSID().toUpperCase())
-                .toComparison();
-        }
-    }
-
-}

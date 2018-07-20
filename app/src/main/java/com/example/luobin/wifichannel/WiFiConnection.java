@@ -31,14 +31,10 @@ public class WiFiConnection {
 
     private final String SSID;
     private final String BSSID;
-    private final String ipAddress;
-    private final int linkSpeed;
 
     public WiFiConnection(@NonNull String SSID, @NonNull String BSSID, @NonNull String ipAddress, int linkSpeed) {
         this.SSID = SSID;
         this.BSSID = BSSID;
-        this.ipAddress = ipAddress;
-        this.linkSpeed = linkSpeed;
     }
 
     @NonNull
@@ -51,39 +47,32 @@ public class WiFiConnection {
         return BSSID;
     }
 
-    @NonNull
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public int getLinkSpeed() {
-        return linkSpeed;
-    }
-
     public boolean isConnected() {
         return !EMPTY.equals(this);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         WiFiConnection that = (WiFiConnection) o;
 
         return new EqualsBuilder()
-            .append(getSSID(), that.getSSID())
-            .append(getBSSID(), that.getBSSID())
-            .isEquals();
+                .append(getSSID(), that.getSSID())
+                .append(getBSSID(), that.getBSSID())
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(getSSID())
-            .append(getBSSID())
-            .toHashCode();
+                .append(getSSID())
+                .append(getBSSID())
+                .toHashCode();
     }
 
     @Override

@@ -23,31 +23,21 @@ import android.support.annotation.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class WiFiAdditional {
-    public static final WiFiAdditional EMPTY = new WiFiAdditional(false);
+    public static final WiFiAdditional EMPTY = new WiFiAdditional();
 
-    private final boolean configuredNetwork;
     private final WiFiConnection wiFiConnection;
 
-    private WiFiAdditional( @NonNull WiFiConnection wiFiConnection, boolean configuredNetwork) {
-        this.wiFiConnection = wiFiConnection;
-        this.configuredNetwork = configuredNetwork;
-    }
-
-    public WiFiAdditional( boolean configuredNetwork) {
-        this( WiFiConnection.EMPTY, configuredNetwork);
-    }
-
     public WiFiAdditional(@NonNull WiFiConnection wiFiConnection) {
-        this(wiFiConnection, true);
+        this.wiFiConnection = wiFiConnection;
+    }
+
+    public WiFiAdditional() {
+        this(WiFiConnection.EMPTY);
     }
 
     @NonNull
     public WiFiConnection getWiFiConnection() {
         return wiFiConnection;
-    }
-
-    public boolean isConfiguredNetwork() {
-        return configuredNetwork;
     }
 
     @Override

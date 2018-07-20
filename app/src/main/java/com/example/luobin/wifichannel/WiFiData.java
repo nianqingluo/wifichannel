@@ -33,16 +33,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class WiFiData {
-    public static final WiFiData EMPTY = new WiFiData(Collections.<WiFiDetail>emptyList(), WiFiConnection.EMPTY, Collections.<String>emptyList());
-
     private final List<WiFiDetail> wiFiDetails;
     private final WiFiConnection wiFiConnection;
-    private final List<String> wiFiConfigurations;
 
-    public WiFiData(@NonNull List<WiFiDetail> wiFiDetails, @NonNull WiFiConnection wiFiConnection, @NonNull List<String> wiFiConfigurations) {
+    public WiFiData(@NonNull List<WiFiDetail> wiFiDetails, @NonNull WiFiConnection wiFiConnection) {
         this.wiFiDetails = wiFiDetails;
         this.wiFiConnection = wiFiConnection;
-        this.wiFiConfigurations = wiFiConfigurations;
     }
 
     @NonNull
@@ -97,21 +93,6 @@ public class WiFiData {
     }
 
     @NonNull
-    public List<WiFiDetail> getWiFiDetails() {
-        return Collections.unmodifiableList(wiFiDetails);
-    }
-
-    @NonNull
-    public List<String> getWiFiConfigurations() {
-        return Collections.unmodifiableList(wiFiConfigurations);
-    }
-
-    @NonNull
-    public WiFiConnection getWiFiConnection() {
-        return wiFiConnection;
-    }
-
-    @NonNull
     private WiFiDetail copyWiFiDetail(WiFiDetail wiFiDetail) {
         WiFiAdditional wiFiAdditional = new WiFiAdditional(wiFiConnection);
         return new WiFiDetail(wiFiDetail, wiFiAdditional);
@@ -139,8 +120,7 @@ public class WiFiData {
             if (input.equals(connection)) {
                 return connection;
             }
-            boolean contains = wiFiConfigurations.contains(input.getSSID());
-            WiFiAdditional wiFiAdditional = new WiFiAdditional(contains);
+            WiFiAdditional wiFiAdditional = new WiFiAdditional();
             return new WiFiDetail(input, wiFiAdditional);
         }
     }

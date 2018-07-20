@@ -20,11 +20,9 @@ package com.example.luobin.wifichannel;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.collections4.Predicate;
@@ -35,54 +33,49 @@ import java.util.List;
 class ChannelRatingAdapter {
     private static final int MAX_CHANNELS_TO_DISPLAY = 10;
 
-    private TextView bestChannels;
     private ChannelRating channelRating;
     private Context mContext;
     private Cache cache;
     private Transformer transformer;
+    private WifiManager mWifiManager;
 
-    ChannelRatingAdapter(@NonNull Context context, @NonNull TextView bestChannels) {
-        //        super(context, R.layout.channel_rating_details, new ArrayList<WiFiChannel>());
-        this.bestChannels = bestChannels;
+    ChannelRatingAdapter(@NonNull Context context) {
         setChannelRating(new ChannelRating());
         this.cache = new Cache();
         mContext = context;
         this.transformer = new Transformer();
+        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
     }
 
     void setChannelRating(@NonNull ChannelRating channelRating) {
         this.channelRating = channelRating;
     }
 
-    public void update() {
-        WiFiData wiFiData = null;
+    public void update(WiFiBand type) {
         List<ScanResult> scanResults = Collections.emptyList();
         WifiInfo wifiInfo = null;
-        List<WifiConfiguration> configuredNetworks = null;
         try {
-            WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-            if (!wifiManager.isWifiEnabled()) {
-                wifiManager.setWifiEnabled(true);
+            if (!mWifiManager.isWifiEnabled()) {
+                mWifiManager.setWifiEnabled(true);
             }
-            if (wifiManager.startScan()) {
-                scanResults = wifiManager.getScanResults();
+            if (mWifiManager.startScan()) {
+                scanResults = mWifiManager.getScanResults();
             }
-            wifiInfo = wifiManager.getConnectionInfo();
-            configuredNetworks = wifiManager.getConfiguredNetworks();
+            wifiInfo = mWifiManager.getConnectionInfo();
         } catch (Exception e) {
             // critical error: set to no results and do not die
         }
         cache.add(scanResults);
-        wiFiData = transformer.transformToWiFiData(cache.getScanResults(), wifiInfo, configuredNetworks);
+        WiFiData wiFiData = transformer.transformToWiFiData(cache.getScanResults(), wifiInfo);
 
-        WiFiBand wiFiBand = WiFiBand.GHZ5;
+        WiFiBand wiFiBand = type;
         //        List<WiFiChannel> wiFiChannels = setWiFiChannels(wiFiBand);
         List<WiFiChannel> wiFiChannels = setWiFiChannels(wiFiBand);
 
         Predicate<WiFiDetail> predicate = new WiFiBandPredicate(wiFiBand);
         List<WiFiDetail> wiFiDetails = wiFiData.getWiFiDetails(predicate, SortBy.STRENGTH);
         channelRating.setWiFiDetails(wiFiDetails);
-        bestChannels(wiFiBand, wiFiChannels);
+        bestChannels(wiFiChannels);
     }
 
     @NonNull
@@ -93,7 +86,7 @@ class ChannelRatingAdapter {
     }
 
 
-    void bestChannels(@NonNull WiFiBand wiFiBand, @NonNull List<WiFiChannel> wiFiChannels) {
+    void bestChannels(@NonNull List<WiFiChannel> wiFiChannels) {
         List<ChannelAPCount> channelAPCounts = channelRating.getBestChannels(wiFiChannels);
         int channelCount = 0;
         StringBuilder result = new StringBuilder();
@@ -109,20 +102,9 @@ class ChannelRatingAdapter {
             channelCount++;
         }
         if (result.length() > 0) {
-            //            bestChannels.setText(result.toString());
-            //            bestChannels.setTextColor(ContextCompat.getColor(getContext(), R.color.success_color));
             Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(mContext, "没有最优的信道", Toast.LENGTH_SHORT).show();
-            //            Resources resources = getContext().getResources();
-            //            StringBuilder message = new StringBuilder(resources.getText(R.string.channel_rating_best_none));
-            //            if (WiFiBand.GHZ2.equals(wiFiBand)) {
-            //                message.append(resources.getText(R.string.channel_rating_best_alternative));
-            //                message.append(" ");
-            //                message.append(getContext().getResources().getString(WiFiBand.GHZ5.getTextResource()));
-            //            }
-            //            bestChannels.setText(message);
-            //            bestChannels.setTextColor(ContextCompat.getColor(getContext(), R.color.error_color));
         }
     }
 

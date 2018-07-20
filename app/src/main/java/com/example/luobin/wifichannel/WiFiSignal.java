@@ -27,7 +27,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class WiFiSignal {
     public static final WiFiSignal EMPTY = new WiFiSignal(0, 0, WiFiWidth.MHZ_20, 0);
-    public static final String FREQUENCY_UNITS = "MHz";
 
     private final int primaryFrequency;
     private final int centerFrequency;
@@ -69,15 +68,6 @@ public class WiFiSignal {
         return wiFiWidth;
     }
 
-    @NonNull
-    public WiFiChannel getPrimaryWiFiChannel() {
-        return getWiFiBand().getWiFiChannels().getWiFiChannelByFrequency(getPrimaryFrequency());
-    }
-
-    @NonNull
-    public WiFiChannel getCenterWiFiChannel() {
-        return getWiFiBand().getWiFiChannels().getWiFiChannelByFrequency(getCenterFrequency());
-    }
 
     public int getLevel() {
         return level;
@@ -88,24 +78,11 @@ public class WiFiSignal {
         return Strength.calculate(level);
     }
 
-    public double getDistance() {
-        return WiFiUtils.calculateDistance(getPrimaryFrequency(), getLevel());
-    }
 
     public boolean isInRange(int frequency) {
         return frequency >= getFrequencyStart() && frequency <= getFrequencyEnd();
     }
 
-    @NonNull
-    public String getChannelDisplay() {
-        int primaryChannel = getPrimaryWiFiChannel().getChannel();
-        int centerChannel = getCenterWiFiChannel().getChannel();
-        String channel = Integer.toString(primaryChannel);
-        if (primaryChannel != centerChannel) {
-            channel += "(" + Integer.toString(centerChannel) + ")";
-        }
-        return channel;
-    }
 
     @Override
     public boolean equals(Object o) {

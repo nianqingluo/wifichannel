@@ -72,11 +72,6 @@ public class ChannelRating {
         return results;
     }
 
-    @NonNull
-    List<WiFiDetail> getWiFiDetails() {
-        return wiFiDetails;
-    }
-
     public void setWiFiDetails(@NonNull List<WiFiDetail> wiFiDetails) {
         this.wiFiDetails = removeGuest(new ArrayList<>(wiFiDetails));
     }

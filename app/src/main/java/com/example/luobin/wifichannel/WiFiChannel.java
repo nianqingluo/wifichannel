@@ -28,7 +28,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class WiFiChannel implements Comparable<WiFiChannel> {
     public static final WiFiChannel UNKNOWN = new WiFiChannel();
 
-    private static final int ALLOWED_RANGE = WiFiChannels.FREQUENCY_SPREAD / 2;
 
     private final int channel;
     private final int frequency;
@@ -48,10 +47,6 @@ public class WiFiChannel implements Comparable<WiFiChannel> {
 
     public int getFrequency() {
         return frequency;
-    }
-
-    public boolean isInRange(int frequency) {
-        return frequency >= this.frequency - ALLOWED_RANGE && frequency <= this.frequency + ALLOWED_RANGE;
     }
 
     @Override

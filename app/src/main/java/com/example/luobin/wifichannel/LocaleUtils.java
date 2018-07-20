@@ -41,7 +41,6 @@ public class LocaleUtils {
     static final Locale POLISH = new Locale("pl");
     static final Locale PORTUGUESE = new Locale("pt");
     static final Locale RUSSIAN = new Locale("ru");
-    private static final String SEPARATOR = "_";
 
     private LocaleUtils() {
         throw new IllegalStateException("Utility class");
@@ -57,47 +56,11 @@ public class LocaleUtils {
         return new ArrayList<>(SyncAvoid.COUNTRIES_LOCALES.values());
     }
 
-    @NonNull
-    public static Locale findByLanguageTag(@NonNull String languageTag) {
-        return find(SyncAvoid.SUPPORTED_LOCALES, new LanguageTagPredicate(fromLanguageTag(languageTag)));
-    }
-
-    @NonNull
-    public static List<Locale> getSupportedLanguages() {
-        return SyncAvoid.SUPPORTED_LOCALES;
-    }
-
-    @NonNull
-    public static String getDefaultCountryCode() {
-        return SyncAvoid.DEFAULT.getCountry();
-    }
-
-    @NonNull
-    public static String getDefaultLanguageTag() {
-        return LocaleUtils.toLanguageTag(SyncAvoid.DEFAULT);
-    }
 
     @NonNull
     private static Locale find(List<Locale> locales, Predicate<Locale> predicate) {
         Locale result = IterableUtils.find(locales, predicate);
         return result == null ? SyncAvoid.DEFAULT : result;
-    }
-
-    @NonNull
-    public static String toLanguageTag(@NonNull Locale locale) {
-        return locale.getLanguage() + SEPARATOR + locale.getCountry();
-    }
-
-    @NonNull
-    private static Locale fromLanguageTag(@NonNull String languageTag) {
-        String[] codes = languageTag.split(SEPARATOR);
-        if (codes.length == 1) {
-            return new Locale(codes[0]);
-        }
-        if (codes.length == 2) {
-            return new Locale(codes[0], StringUtils.capitalize(codes[1]));
-        }
-        return SyncAvoid.DEFAULT;
     }
 
     private static class CountryCodePredicate implements Predicate<Locale> {
@@ -126,19 +89,6 @@ public class LocaleUtils {
         }
     }
 
-    private static class LanguageTagPredicate implements Predicate<Locale> {
-        private final Locale locale;
-
-        private LanguageTagPredicate(@NonNull Locale locale) {
-            this.locale = locale;
-        }
-
-        @Override
-        public boolean evaluate(Locale object) {
-            return object.getLanguage().equals(locale.getLanguage()) && object.getCountry().equals(locale.getCountry());
-        }
-    }
-
     private static class SyncAvoid {
         private static final Locale DEFAULT = Locale.getDefault();
         private static final SortedMap<String, Locale> COUNTRIES_LOCALES;
@@ -152,16 +102,16 @@ public class LocaleUtils {
             COUNTRIES_LOCALES = new TreeMap<>();
             IterableUtils.forEach(AVAILABLE_LOCALES, new CountryClosure());
             SUPPORTED_LOCALES = new ArrayList<>(new HashSet<>(Arrays.asList(
-                Locale.GERMAN,
-                Locale.ENGLISH,
-                SPANISH,
-                Locale.FRENCH,
-                Locale.ITALIAN,
-                POLISH,
-                PORTUGUESE,
-                RUSSIAN,
-                Locale.SIMPLIFIED_CHINESE,
-                Locale.TRADITIONAL_CHINESE, DEFAULT)));
+                    Locale.GERMAN,
+                    Locale.ENGLISH,
+                    SPANISH,
+                    Locale.FRENCH,
+                    Locale.ITALIAN,
+                    POLISH,
+                    PORTUGUESE,
+                    RUSSIAN,
+                    Locale.SIMPLIFIED_CHINESE,
+                    Locale.TRADITIONAL_CHINESE, DEFAULT)));
         }
 
         private static class CountryClosure implements Closure<Locale> {
